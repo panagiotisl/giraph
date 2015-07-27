@@ -34,6 +34,7 @@ import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
@@ -51,7 +52,7 @@ import java.util.List;
     name = "Page rank"
 )
 public class SimplePageRankComputation extends BasicComputation<IntWritable,
-    DoubleWritable, FloatWritable, DoubleWritable> {
+    DoubleWritable, NullWritable, DoubleWritable> {
   /** Number of supersteps for this test */
   public static final int MAX_SUPERSTEPS = 30;
   /** Logger */
@@ -66,7 +67,7 @@ public class SimplePageRankComputation extends BasicComputation<IntWritable,
 
   @Override
   public void compute(
-      Vertex<IntWritable, DoubleWritable, FloatWritable> vertex,
+      Vertex<IntWritable, DoubleWritable, NullWritable> vertex,
       Iterable<DoubleWritable> messages) throws IOException {
     if (getSuperstep() >= 1) {
       double sum = 0;
