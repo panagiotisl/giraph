@@ -32,6 +32,7 @@ import org.apache.giraph.master.DefaultMasterCompute;
 import org.apache.giraph.worker.WorkerContext;
 import org.apache.hadoop.io.DoubleWritable;
 import org.apache.hadoop.io.FloatWritable;
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -49,7 +50,7 @@ import java.util.List;
 @Algorithm(
     name = "Page rank"
 )
-public class SimplePageRankComputation extends BasicComputation<LongWritable,
+public class SimplePageRankComputation extends BasicComputation<IntWritable,
     DoubleWritable, FloatWritable, DoubleWritable> {
   /** Number of supersteps for this test */
   public static final int MAX_SUPERSTEPS = 30;
@@ -65,7 +66,7 @@ public class SimplePageRankComputation extends BasicComputation<LongWritable,
 
   @Override
   public void compute(
-      Vertex<LongWritable, DoubleWritable, FloatWritable> vertex,
+      Vertex<IntWritable, DoubleWritable, FloatWritable> vertex,
       Iterable<DoubleWritable> messages) throws IOException {
     if (getSuperstep() >= 1) {
       double sum = 0;
