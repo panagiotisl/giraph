@@ -25,8 +25,8 @@ import org.apache.hadoop.mapreduce.TaskAttemptID;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
 /*if_not[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
-import org.apache.hadoop.mapreduce.task.JobContextImpl;
-import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
+//import org.apache.hadoop.mapreduce.task.JobContextImpl;
+//import org.apache.hadoop.mapreduce.task.TaskAttemptContextImpl;
 /*end[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
 
 /**
@@ -46,11 +46,11 @@ public class HadoopUtils {
   public static TaskAttemptContext makeTaskAttemptContext(Configuration conf,
       TaskAttemptID taskAttemptID) {
     TaskAttemptContext context;
-    /*if[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]
+    /*if[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
     context = new TaskAttemptContext(conf, taskAttemptID);
-    else[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
+    /*else[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]
     context = new TaskAttemptContextImpl(conf, taskAttemptID);
-    /*end[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
+    end[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
     return context;
   }
 
@@ -94,11 +94,11 @@ public class HadoopUtils {
    */
   public static JobContext makeJobContext(Configuration conf, JobID jobID) {
     JobContext context;
-    /*if[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]
+    /*if[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
     context = new JobContext(conf, jobID);
-    else[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
+    /*else[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]
     context = new JobContextImpl(conf, jobID);
-    /*end[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
+    end[HADOOP_NON_JOBCONTEXT_IS_INTERFACE]*/
     return context;
   }
 
