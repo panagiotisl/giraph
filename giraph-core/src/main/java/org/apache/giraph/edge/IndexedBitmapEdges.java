@@ -21,6 +21,7 @@ package org.apache.giraph.edge;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
 
+import org.apache.giraph.utils.ExtendedDataInput;
 import org.apache.giraph.utils.Trimmable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -41,6 +42,7 @@ import java.util.Iterator;
  * @param <E> Edge value
  */
 public class IndexedBitmapEdges
+	extends ConfigurableOutEdges<IntWritable, NullWritable>
 	implements ReuseObjectsOutEdges<IntWritable, NullWritable>, Trimmable {
   /** Serialized edges. */
   private byte[] serializedEdges;
@@ -138,9 +140,7 @@ public class IndexedBitmapEdges
 	  // Nothing to do
   }
 
-  /**
-   * Iterator that reuses the same Edge object.
-   */
+  /** Iterator that reuses the same Edge object. */
   private class IndexedBitmapEdgeIterator
       extends UnmodifiableIterator<Edge<IntWritable, NullWritable>> {
     /** Representative edge object. */
@@ -150,36 +150,128 @@ public class IndexedBitmapEdges
     private int currentEdge = 0;
     /** Current position */
     private int currentPosition = 0;
+    /** Index int */
+    private int indexInt;
+    /** Current byte */
+    private Byte my_byte;
+    /** Input for processing the bytes */
+    private ExtendedDataInput extendedDataInput =
+        getConf().createExtendedDataInput(
+            serializedEdges, 0, serializedEdges.length);
+
 
     @Override
     public boolean hasNext() {
       return currentEdge < edgeCount;
     }
 
+//    @Override
+//    public Edge<IntWritable, NullWritable>  next() {
+//    	int bucket = currentPosition / 8;
+//    	int pos = currentPosition % 8;
+////    	byte[] index = new byte[4];
+//    	int nextIndex = 0, nextPos = 0;
+//    	boolean done = false;
+//    	while(!done){
+//    		for(int i=pos;i<8;i++){
+//        		if(CompressionUtils.isSet(serializedEdges[bucket*5+4], i)){
+////    			if(true){
+//        			done = true;
+//        			nextPos = i;
+////        			System.arraycopy(serializedEdges, bucket*5, index, 0, 4);
+////        			nextIndex = CompressionUtils.fromByteArray(index);
+//        			nextIndex = 3;
+//        			currentEdge++;
+//        			currentPosition = bucket * 8 + i + 1;
+//        			break;
+//        		}
+//        	}
+//        	bucket++;
+//        	pos = 0;
+//    	}
+//    	representativeEdge.getTargetVertexId().set(nextIndex * 8 + nextPos);
+//    	return representativeEdge;
+//    }
+    
+//    @Override
+//    public Edge<IntWritable, NullWritable> next() {
+//    	if(currentPosition==8){
+//    		bucket++;
+//    		currentPosition=0;
+//    	}
+//    	if(currentPosition == 0){
+//    		System.arraycopy(serializedEdges, bucket*5, index, 0, 4);
+////    		indexInt = java.nio.ByteBuffer.wrap(index).getInt();
+//			indexInt = CompressionUtils.fromByteArray(index);
+//			my_byte = serializedEdges[bucket*5+4];
+//    	}
+//    	int pos = currentPosition;
+//    	int nextPos = 0;
+//    	boolean done = false;
+//    	while(!done){
+//    		for(int i=pos;i<8;i++){
+//        		if(CompressionUtils.isSet(my_byte, i)){
+//        			done = true;
+//        			nextPos = i;
+//        			currentEdge++;
+//        			currentPosition = i + 1;
+//        			break;
+//        		}
+//        	}
+//    		// TODO check the commented out code
+//    		if(!done /*&& mapIterator.hasNext()*/){
+//    			bucket++;
+//    			System.arraycopy(serializedEdges, bucket*5, index, 0, 4);
+//    			indexInt = CompressionUtils.fromByteArray(index);
+//    			my_byte = serializedEdges[bucket*5+4];
+//        		pos = 0;
+//    		}
+//    	}
+//    	representativeEdge.getTargetVertexId().set(indexInt * 8 + nextPos);
+//    	return representativeEdge;
+//    }
+
     @Override
-    public Edge<IntWritable, NullWritable>  next() {
-    	int bucket = currentPosition / 8;
-    	int pos = currentPosition % 8;
-    	byte[] index = new byte[4];
-    	int nextIndex = 0, nextPos = 0;
+    public Edge<IntWritable, NullWritable> next() {
+    	if(currentPosition==8){
+    		currentPosition=0;
+    	}
+    	if(currentPosition == 0){
+    		try {
+				indexInt = extendedDataInput.readInt();
+				my_byte = extendedDataInput.readByte();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    	}
+    	int pos = currentPosition;
+    	int nextPos = 0;
     	boolean done = false;
     	while(!done){
     		for(int i=pos;i<8;i++){
-        		if(CompressionUtils.isSet(serializedEdges[bucket*5+4], i)){
+        		if(CompressionUtils.isSet(my_byte, i)){
         			done = true;
         			nextPos = i;
-        			System.arraycopy(serializedEdges, bucket*5, index, 0, 4);
-        			nextIndex = CompressionUtils.fromByteArray(index);
         			currentEdge++;
-        			currentPosition = bucket * 8 + i + 1;
+        			currentPosition = i + 1;
         			break;
         		}
         	}
-        	bucket++;
-        	pos = 0;
+    		// TODO check the commented out code
+    		if(!done /*&& mapIterator.hasNext()*/){
+        		try {
+    				indexInt = extendedDataInput.readInt();
+    				my_byte = extendedDataInput.readByte();
+    			} catch (IOException e) {
+    				e.printStackTrace();
+    			}
+        		pos = 0;
+    		}
     	}
-    	return EdgeFactory.create(new IntWritable(nextIndex * 8 + nextPos));
+    	representativeEdge.getTargetVertexId().set(indexInt * 8 + nextPos);
+    	return representativeEdge;
     }
+    
   }
 
   @Override

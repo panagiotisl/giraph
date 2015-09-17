@@ -189,14 +189,14 @@ public class TestSizeEdges {
 					for(int i=2;i<splits.length;i++){
 						initialEdges.add(EdgeFactory.create(new IntWritable(Integer.parseInt(splits[i]))));
 					}
-					System.out.println("Edges read: " + initialEdges.size());
+//					System.out.println("Edges read: " + initialEdges.size());
 					edges.initialize((Iterable)initialEdges);
-					int count = 0;
-					for(Iterator<Edge<IntWritable, NullWritable>> edgeIter = edges.iterator(); edgeIter.hasNext();){
-			    		edgeIter.next();
-			    		count++;
-			    	}		
-					System.out.println("Edges in: " + count + " " + edges.size());
+//					int count = 0;
+//					for(Iterator<Edge<IntWritable, NullWritable>> edgeIter = edges.iterator(); edgeIter.hasNext();){
+//			    		edgeIter.next();
+//			    		count++;
+//			    	}		
+//					System.out.println("Edges in: " + count + " " + edges.size());
 					allEdges.add(edges);
 	    	   }
 	    	   long endTime = System.nanoTime();

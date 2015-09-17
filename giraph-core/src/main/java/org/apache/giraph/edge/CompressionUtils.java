@@ -34,8 +34,8 @@ public class CompressionUtils {
 		 * 
 		 * */
 		public static boolean isSet(byte my_byte, int pos) {
-			if (pos > 7 || pos < 0)
-				throw new IllegalArgumentException("not a valid bit position: " + pos);
+//			if (pos > 7 || pos < 0)
+//				throw new IllegalArgumentException("not a valid bit position: " + pos);
 			return (my_byte & (1 << pos)) != 0;
 		}
 
@@ -50,9 +50,9 @@ public class CompressionUtils {
 		 * 
 		 * */
 		public static byte set_bit(byte my_byte, int pos) {
-			if (pos > 7 || pos < 0)
-				throw new IllegalArgumentException("not a valid bit position: "
-						+ pos);
+//			if (pos > 7 || pos < 0)
+//				throw new IllegalArgumentException("not a valid bit position: "
+//						+ pos);
 			return (byte) (my_byte | (1 << pos));
 		}
 
@@ -67,9 +67,9 @@ public class CompressionUtils {
 		 * 
 		 * */
 		public static byte unset_bit(byte my_byte, int pos) {
-			if (pos > 7 || pos < 0)
-				throw new IllegalArgumentException("not a valid bit position: "
-						+ pos);
+//			if (pos > 7 || pos < 0)
+//				throw new IllegalArgumentException("not a valid bit position: "
+//						+ pos);
 			return (byte) (my_byte & ~(1 << pos));
 		}
 		

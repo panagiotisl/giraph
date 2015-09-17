@@ -145,7 +145,6 @@ public class HashMapBitmapEdges
 
     @Override
     public Edge<IntWritable, NullWritable> next() {
-//    	System.out.println("next:" + currentPosition + " " + entry.getKey() + " " + edgeCount);
     	if(currentPosition==8){
     		entry = mapIterator.next();
     		currentPosition=0;
@@ -156,14 +155,12 @@ public class HashMapBitmapEdges
     	Byte my_byte = entry.getValue();
     	while(!done){
     		for(int i=pos;i<8;i++){
-//    			System.out.println("pos:" + i + " " + String.format("%8s", Integer.toBinaryString(entry.getValue() & 0xFF)).replace(' ', '0'));
         		if(CompressionUtils.isSet(my_byte, i)){
         			done = true;
         			nextPos = i;
         			nextIndex = entry.getKey();
         			currentEdge++;
         			currentPosition = i + 1;
-//        			System.out.println("found:" + currentPosition + " " + entry.getKey());
         			break;
         		}
         	}
@@ -173,7 +170,8 @@ public class HashMapBitmapEdges
         		pos = 0;
     		}
     	}
-    	return EdgeFactory.create(new IntWritable(nextIndex * 8 + nextPos));
+    	representativeEdge.getTargetVertexId().set(nextIndex * 8 + nextPos);
+    	return representativeEdge;
     }
   }
 
