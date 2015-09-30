@@ -20,10 +20,13 @@ package org.apache.giraph.edge;
 
 import com.google.common.collect.Iterators;
 import com.google.common.collect.UnmodifiableIterator;
+
 import org.apache.giraph.utils.ExtendedDataInput;
 import org.apache.giraph.utils.ExtendedDataOutput;
 import org.apache.giraph.utils.Trimmable;
 import org.apache.giraph.utils.WritableUtils;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableComparable;
 
@@ -154,8 +157,10 @@ public class ByteArrayEdges<I extends WritableComparable, E extends Writable>
         getConf().createExtendedDataInput(
             serializedEdges, 0, serializedEdgesBytesUsed);
     /** Representative edge object. */
-    private ReusableEdge<I, E> representativeEdge =
-        getConf().createReusableEdge();
+//    private ReusableEdge<I, E> representativeEdge =
+//        getConf().createReusableEdge();
+    private final Edge<IntWritable, NullWritable> representativeEdge =
+            EdgeFactory.create(new IntWritable());    
 
     @Override
     public boolean hasNext() {
@@ -170,7 +175,7 @@ public class ByteArrayEdges<I extends WritableComparable, E extends Writable>
         throw new IllegalStateException("next: Failed on pos " +
             extendedDataInput.getPos() + " edge " + representativeEdge);
       }
-      return representativeEdge;
+      return (Edge<I, E>) representativeEdge;
     }
   }
 
